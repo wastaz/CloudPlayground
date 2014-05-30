@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Funq;
 using Microsoft.WindowsAzure.ServiceRuntime;
+using Raven.Client.Document;
 using ServiceStack;
 using ServiceStack.Mvc;
 using XSockets.Client40;
@@ -18,6 +19,7 @@ namespace AspNetServiceStackRole {
 
         public override void Configure(Container container) {
             SetupXSockets(container);
+            SetupRaven(container);
 
             Plugins.Add(new CorsFeature());
             GlobalRequestFilters.Add((req, res, dto) => {
@@ -31,9 +33,32 @@ namespace AspNetServiceStackRole {
             ControllerBuilder.Current.SetControllerFactory(new FunqControllerFactory(container));
         }
 
+        private void SetupRaven(Container container) {
+            container.Register(new RavenWrapper());
+        }
+
         private void SetupXSockets(Container container) {
             container.Register(new XSocketsWrapper());
         }
+    }
+
+    public class RavenWrapper {
+        public RavenWrapper() {
+            TryConnect();
+        }
+
+        private void TryConnect() {
+            try {
+                DocStore = new DocumentStore {ConnectionStringName = "ravendb"};
+                DocStore.Initialize();
+                DocStore.DatabaseCommands.GetBuildNumber();
+            } catch {
+                DocStore = null;
+                // Eat exceptions
+            }
+        }
+
+        public DocumentStore DocStore { get; private set; }
     }
 
     public class XSocketsWrapper {
