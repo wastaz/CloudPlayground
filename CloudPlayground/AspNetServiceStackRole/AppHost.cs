@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AspNetServiceStackRole.TvRageApi;
 using Funq;
 using Microsoft.WindowsAzure.ServiceRuntime;
+using Raven.Client;
 using Raven.Client.Document;
+using Raven.Client.Indexes;
 using ServiceStack;
 using ServiceStack.Mvc;
 using XSockets.Client40;
@@ -18,6 +22,7 @@ namespace AspNetServiceStackRole {
         public AppHost() : base("MVC 4", typeof(AppHost).Assembly) { }
 
         public override void Configure(Container container) {
+            container.Register<TvRageApiHandler>(new TvRageApiHandler());
             SetupXSockets(container);
             SetupRaven(container);
 
@@ -35,6 +40,8 @@ namespace AspNetServiceStackRole {
 
         private void SetupRaven(Container container) {
             container.Register(new RavenWrapper());
+            container.Register<IDocumentStore>(container.Resolve<RavenWrapper>().DocStore);
+            IndexCreation.CreateIndexes(Assembly.GetExecutingAssembly(), container.Resolve<IDocumentStore>());
         }
 
         private void SetupXSockets(Container container) {

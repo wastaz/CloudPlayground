@@ -67,6 +67,9 @@
     <Reference Include="Raven.Client.Lightweight">
       <HintPath>..\packages\RavenDB.Client.2.5.2879\lib\net45\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\RestSharp.104.4.0\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="ServiceStack">
       <HintPath>..\packages\ServiceStack.4.0.20\lib\net40\ServiceStack.dll</HintPath>
     </Reference>
@@ -175,18 +178,27 @@
   <ItemGroup>
     <Compile Include="AppHost.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="DataAccess\TvSeries.cs" />
+    <Compile Include="DataAccess\TvSeriesNameIndex.cs" />
+    <Compile Include="DataAccess\TvSeriesNumberOfEpisodesReduceIndex.cs" />
     <Compile Include="Dto\EchoRequest.cs" />
+    <Compile Include="Dto\TvSeriesQuery.cs" />
+    <Compile Include="Dto\TvSeriesCommand.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\EchoService.cs" />
+    <Compile Include="Services\TvSeriesService.cs" />
+    <Compile Include="TvRageApi\TvRageApiHandler.cs" />
     <Compile Include="WebRole.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
